@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "368356765150",
+    "project_id": "rushbuy-d3773",
+    "storage_bucket": "rushbuy-d3773.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368356765150:android:bbd9e6d6b7cf4d3fbe014f",
+        "android_client_info": {
+          "package_name": "com.example.rushbuy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "368356765150-qi1a1765e1f860q730rdkbutpos4l2gb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.rushbuy",
+            "certificate_hash": "b296179fbe5cb9e7fb7abadb3f2f65bdadcd5e84"
+          }
+        },
+        {
+          "client_id": "368356765150-gnana91nrtih2r1jplv5j88tqnjeasrd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVP_y7zu5oY7qin-Ph1izjebixpCKYyPA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "368356765150-gnana91nrtih2r1jplv5j88tqnjeasrd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

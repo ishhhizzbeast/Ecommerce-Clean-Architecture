@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base theme for your app -->
+    <style name="Base.Theme.RushBuy" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Your app customizations -->
+        <item name="colorPrimary">@color/splash_background</item>
+        <!-- Add other customizations -->
+    </style>
+    <!-- CRITICAL: Splash Screen Theme -->
+<!--    <style name="Theme.RushBuy.Splash" parent="Theme.SplashScreen">-->
+<!--        &lt;!&ndash; Background color that matches your splash &ndash;&gt;-->
+<!--        <item name="windowSplashScreenBackground">@color/splash_background</item>-->
+
+<!--        &lt;!&ndash; Your app icon (this shows immediately) &ndash;&gt;-->
+<!--        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>-->
+
+<!--&lt;!&ndash;        &lt;!&ndash; Optional: Icon size &ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;        <item name="windowSplashScreenIconSize">120dp</item>&ndash;&gt;-->
+
+<!--        &lt;!&ndash; CRITICAL: This theme switches to after splash &ndash;&gt;-->
+<!--        <item name="postSplashScreenTheme">@style/Base.Theme.RushBuy</item>-->
+
+<!--        &lt;!&ndash; CRITICAL: Remove status bar during splash &ndash;&gt;-->
+<!--        <item name="android:statusBarColor">@color/splash_background</item>-->
+<!--        <item name="android:navigationBarColor">@color/splash_background</item>-->
+
+<!--        &lt;!&ndash; Make it fullscreen if needed &ndash;&gt;-->
+<!--        <item name="android:windowTranslucentStatus">false</item>-->
+<!--        <item name="android:windowTranslucentNavigation">false</item>-->
+<!--    </style>-->
+</resources>
