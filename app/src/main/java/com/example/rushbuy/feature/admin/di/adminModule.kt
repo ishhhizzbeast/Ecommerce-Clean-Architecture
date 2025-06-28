@@ -37,7 +37,8 @@ val adminModule = module {
             productRepository = get(), // Resolves IProductRepository from the loaded modules
             addProductUseCase = get(),
             updateProductUseCase = get(),
-            savedStateHandle = parameters.get() // Injects SavedStateHandle provided by koinViewModel()
+            savedStateHandle = parameters.get(),
+            triggerNewItemNotificationUseCase = get()
         )
     }
 }

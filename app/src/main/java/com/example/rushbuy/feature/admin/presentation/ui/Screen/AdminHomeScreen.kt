@@ -34,13 +34,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.rushbuy.core.foundation.utils.ResultState
-import com.example.rushbuy.feature.admin.presentation.AdminRoutes
 import com.example.rushbuy.feature.admin.presentation.ui.component.ProductAdminCard
 import com.example.rushbuy.feature.admin.presentation.viewmodel.AdminHomeViewModel
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.rushbuy.core.foundation.utils.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,7 +90,7 @@ fun AdminHomeScreen(
             FloatingActionButton(onClick = {
                 // Navigate to the AddEditProductScreen for adding a new product.
                 // We pass null for productId, indicating a new product.
-                navController.navigate(AdminRoutes.addEditProductRoute(null))
+                navController.navigate(Screen.AddEditProduct.createRoute(null))
             }) {
                 Icon(Icons.Filled.Add, "Add new product")
             }
@@ -131,7 +131,7 @@ fun AdminHomeScreen(
                                     onEditClick = { productToEdit ->
                                         // Navigate to AddEditProductScreen for editing.
                                         // Pass the product's ID to the navigation route.
-                                        navController.navigate(AdminRoutes.addEditProductRoute(productToEdit.id.toString()))
+                                        navController.navigate(Screen.AddEditProduct.createRoute(productToEdit.id.toString()))
                                     },
                                     onDeleteClick = { productToDelete ->
                                         // Call ViewModel function to initiate product deletion

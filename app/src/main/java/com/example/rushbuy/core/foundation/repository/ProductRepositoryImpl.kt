@@ -31,8 +31,10 @@ class ProductRepositoryImpl( // Removed @Inject
         return productDao.getProductById(id)?.toDomain()
     }
 
-    override suspend fun addProduct(product: Product) {
-        productDao.insertProduct(product.toEntity())
+    override suspend fun addProduct(product: Product): Product {
+        val generatedIdLong = productDao.insertProduct(product.toEntity()) // Get the generated ID
+        val newProduct = product.copy(id = generatedIdLong.toInt()) // Create new Product with ID
+        return newProduct
         // TODO: In a real application, you might also push this to a remote API
         // if the admin's additions need to be synchronized server-side.
         // This would involve calling productApiService.createProduct(product.toDto())

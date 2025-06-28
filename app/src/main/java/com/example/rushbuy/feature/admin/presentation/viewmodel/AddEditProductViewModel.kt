@@ -1,5 +1,6 @@
 package com.example.rushbuy.feature.admin.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,8 @@ import com.example.rushbuy.core.foundation.domain.repository.IProductRepository
 import com.example.rushbuy.core.foundation.utils.ResultState
 import com.example.rushbuy.feature.admin.domain.AddProductUseCase
 import com.example.rushbuy.feature.admin.domain.UpdateProductUseCase
+import com.example.rushbuy.feature.notification.domain.model.NewItemNotificationData
+import com.example.rushbuy.feature.notification.domain.usecase.TriggerNewItemNotificationUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +20,8 @@ class AddEditProductViewModel(
     private val productRepository: IProductRepository, // Used to fetch an existing product by ID
     private val addProductUseCase: AddProductUseCase,
     private val updateProductUseCase: UpdateProductUseCase,
-    private val savedStateHandle: SavedStateHandle // Injected by Koin via koinViewModel() for nav args
+    private val savedStateHandle: SavedStateHandle, // Injected by Koin via koinViewModel() for nav args
+    private val triggerNewItemNotificationUseCase: TriggerNewItemNotificationUseCase
 ) : ViewModel() {
 
     // State for the product being added or edited.
@@ -76,17 +80,34 @@ class AddEditProductViewModel(
      * Updates the [_saveUpdateResult] StateFlow with the operation's state.
      * @param product The [Product] object containing the details to save.
      */
+    // In AddEditProductViewModel.kt
     fun saveProduct(product: Product) {
         viewModelScope.launch {
-            _saveUpdateResult.value = ResultState.Loading // Indicate save/update is in progress
-            val result = if (product.id == 0) {
-                // If product.id is blank, it's a new product
-                addProductUseCase(product)
-            } else {
-                // If product.id is present, it's an existing product to update
-                updateProductUseCase(product)
+            _saveUpdateResult.value = ResultState.Loading
+            val result: ResultState<Unit>
+
+            if (product.id == 0) { // If it's a new product
+                val addResult = addProductUseCase(product) // This now returns ResultState<Product>
+
+                if (addResult is ResultState.Success) {
+                    val addedProduct = addResult.data // This will be the Product with the actual generated ID
+
+                    Log.d("AddEditProductVM", "Product added successfully. ID=${addedProduct.id}, Name=${addedProduct.name}. Triggering notification.")
+                    triggerNewItemNotificationUseCase(
+                        NewItemNotificationData(
+                            id = addedProduct.id, // Use the actual generated ID
+                            name = addedProduct.name
+                        )
+                    )
+                    result = ResultState.Success(Unit)
+                } else {
+                    Log.e("AddEditProductVM", "Failed to add product: ${(addResult as ResultState.Error).message}")
+                    result = addResult as ResultState.Error
+                }
+            } else { // If it's an existing product (update)
+                result = updateProductUseCase(product)
             }
-            _saveUpdateResult.value = result // Update UI state with the result of the operation
+            _saveUpdateResult.value = result
         }
     }
 

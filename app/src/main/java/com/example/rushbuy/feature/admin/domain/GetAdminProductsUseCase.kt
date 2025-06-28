@@ -16,10 +16,10 @@ class GetAdminProductsUseCase(
 class AddProductUseCase(
     private val productRepository: IProductRepository
 ) {
-    suspend operator fun invoke(product: Product): ResultState<Unit> {
+    suspend operator fun invoke(product: Product): ResultState<Product> {
         return try {
-            productRepository.addProduct(product)
-            ResultState.Success(Unit)
+            val newProduct = productRepository.addProduct(product)
+            ResultState.Success(newProduct)
         } catch (e: Exception) {
             ResultState.Error("Failed to add product: ${e.message ?: "Unknown error"}")
         }

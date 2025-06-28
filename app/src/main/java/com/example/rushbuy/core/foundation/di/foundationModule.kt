@@ -1,6 +1,7 @@
 package com.example.rushbuy.core.foundation.di
 
 import androidx.room.Room
+import com.example.rushbuy.core.foundation.data.local.Migration.MIGRATION_1_2
 import com.example.rushbuy.core.foundation.data.local.database.AppDatabase
 import com.example.rushbuy.core.foundation.data.remote.api.ProductApiService
 import com.example.rushbuy.core.foundation.domain.repository.IProductRepository
@@ -20,6 +21,7 @@ val coreModule = module {
             AppDatabase::class.java,
             "rushbuy_db" // Database name
         )
+            .addMigrations(MIGRATION_1_2)
             // .fallbackToDestructiveMigration() // Use this carefully for dev, removes data on schema changes
             .build()
     }
