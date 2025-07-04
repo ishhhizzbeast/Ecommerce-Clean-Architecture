@@ -17,7 +17,7 @@ interface ProductDao {
     suspend fun getProductById(id: Int): ProductEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertProduct(product: ProductEntity):Long
+    suspend fun insertProduct(product: ProductEntity):Long // Returns Long for generated ID
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAllProducts(products: List<ProductEntity>)
@@ -26,7 +26,7 @@ interface ProductDao {
     suspend fun updateProduct(product: ProductEntity)
 
     @Query("DELETE FROM products WHERE id = :id")
-    suspend fun deleteProduct(id: Int)
+    suspend fun deleteProduct(id: Int) // This method is fine, used by deleteProductById in local data source
 
     @Query("SELECT COUNT(*) FROM products")
     suspend fun getProductCount(): Int
@@ -37,4 +37,7 @@ interface ProductDao {
     @Query("SELECT * FROM products WHERE category = :category")
     fun getProductsByCategory(category: String): Flow<List<ProductEntity>>
 
+    // NEW ADDITION:
+    @Query("DELETE FROM products")
+    suspend fun clearAllProducts() // Required by ProductLocalDataSourceImpl
 }

@@ -117,6 +117,13 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
 
+    // For Paging 3 with Compose
+    implementation("androidx.paging:paging-compose:1.0.0-alpha20")
+    //lifecycle
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.0")
+
+    //implementation("androidx.compose.foundation:foundation-layout-staggeredgrid:1.7.0") // Or the latest stable version
+
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.15.0"))
     implementation("com.google.firebase:firebase-analytics")

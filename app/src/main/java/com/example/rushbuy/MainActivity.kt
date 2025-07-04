@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.compose.rememberNavController
 import com.example.rushbuy.core.theme.RushBuyTheme
+import com.example.rushbuy.feature.productList.presentation.ProductListScreen
 import com.example.rushbuy.navigation.AppNavigation
 import org.koin.androidx.compose.KoinAndroidContext
 
@@ -38,6 +39,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 KoinAndroidContext {
                     AppNavigation(navController)
+
                 }
             }
         }

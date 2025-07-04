@@ -44,12 +44,12 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
                     when (userRole) {
                         UserRole.USER -> {
                             navController.navigate(Screen.UserGraph.route) {
-                                popUpTo(Screen.AuthGraph.route) { inclusive = true } // Pop up the entire auth graph
+                                popUpTo(navController.graph.id) { inclusive = true } // Pop up the entire auth graph
                             }
                         }
                         UserRole.ADMIN -> {
                             navController.navigate(Screen.AdminGraph.route) {
-                                popUpTo(Screen.AuthGraph.route) { inclusive = true } // Pop up the entire auth graph
+                                popUpTo(navController.graph.id) { inclusive = true } // Pop up the entire auth graph
                             }
                         }
                         null -> {

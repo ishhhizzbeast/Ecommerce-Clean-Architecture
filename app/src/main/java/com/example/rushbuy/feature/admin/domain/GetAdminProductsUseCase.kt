@@ -1,5 +1,6 @@
 package com.example.rushbuy.feature.admin.domain
 
+import androidx.paging.PagingData
 import com.example.rushbuy.core.foundation.domain.model.Product
 import com.example.rushbuy.core.foundation.domain.repository.IProductRepository
 import com.example.rushbuy.core.foundation.utils.ResultState
@@ -8,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 class GetAdminProductsUseCase(
     private val productRepository: IProductRepository
 ) {
-    operator fun invoke(): Flow<List<Product>> {
+    operator fun invoke(): Flow<PagingData<Product>> {
         return productRepository.getProducts()
     }
 }

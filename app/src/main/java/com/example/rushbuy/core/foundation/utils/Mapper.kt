@@ -1,5 +1,7 @@
 package com.example.rushbuy.core.foundation.utils
 
+//import androidx. compose.ui.graphics.Color
+
 import com.example.rushbuy.core.foundation.data.local.entity.ProductEntity
 import com.example.rushbuy.core.foundation.data.remote.dto.ProductDto
 import com.example.rushbuy.core.foundation.domain.model.Product
@@ -7,7 +9,7 @@ import com.example.rushbuy.core.foundation.domain.model.Product
 fun ProductDto.toDomain(): Product {
     return Product(
         id = this.id,
-        imageUrl = this.imageUrl,
+        imageUrl = this.images.firstOrNull() ?: thumbnailUrl,
         name = this.title, // 'title' from API maps to 'name' in domain model
         price = this.price,
         description = this.description,
@@ -22,7 +24,7 @@ fun ProductDto.toDomain(): Product {
 fun ProductDto.toEntity(): ProductEntity {
     return ProductEntity(
         id = this.id,
-        imageUrl = this.imageUrl,
+        imageUrl = this.images.firstOrNull() ?: thumbnailUrl,
         name = this.title, // 'title' from API maps to 'name' in entity
         price = this.price,
         description = this.description,
@@ -68,4 +70,5 @@ fun Product.toEntity(): ProductEntity {
 // TODO: If you ever need to send a Product domain model back to the API (e.g., for admin updates),
 // you would add a Product.toDto() mapper here as well.
 // fun Product.toDto(): ProductDto { ... }
+
 
