@@ -31,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
+import com.example.rushbuy.feature.Category.presentation.ui.CategoryScreen
 
 // Data class for bottom navigation items (replaces BottomNavItem from previous MainScreen.kt)
 sealed class UserBottomNavItem(val route: String, val icon: ImageVector, val label: String) {
@@ -99,7 +100,8 @@ fun UserMainScreen(mainNavController: NavController) {
         NavHost(userNavController, startDestination = UserBottomNavItem.Home.route, Modifier.padding(innerPadding)) {
             composable(UserBottomNavItem.Home.route) { ProductListScreen(navController = userNavController) } // Your existing ProductListScreen
             composable(UserBottomNavItem.Category.route) { CategoryScreen(navController = userNavController) }
-            composable(UserBottomNavItem.Cart.route) { CartScreen(navController = userNavController) }
+            // Use the actual CartScreen composable here
+            composable(UserBottomNavItem.Cart.route) { com.example.rushbuy.feature.cart.presentation.ui.CartScreen(navController = userNavController) } // <-- UPDATED HERE
             composable(UserBottomNavItem.Profile.route) { ProfileScreen(navController = userNavController) }
 
             // Product Detail Screen (accessible from ProductListScreen, not a bottom nav item)
@@ -128,25 +130,5 @@ fun ProfileScreen(navController: NavController) {
         contentAlignment = Alignment.Center
     ) {
         Text("Profile Screen - Coming Soon!", style = MaterialTheme.typography.headlineMedium)
-    }
-}
-
-
-@Composable
-fun CartScreen(navController: NavController) {
-    Box(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text("Cart Screen - Coming Soon!", style = MaterialTheme.typography.headlineMedium)
-    }
-}
-@Composable
-fun CategoryScreen(navController: NavController) {
-    Box(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text("Category Screen - Coming Soon!", style = MaterialTheme.typography.headlineMedium)
     }
 }

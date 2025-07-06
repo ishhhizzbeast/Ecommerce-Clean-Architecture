@@ -2,11 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Network permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!--Foreground Services Permission -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
@@ -21,12 +19,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.RushBuy"
-        tools:targetApi="31">
-        <service
-            android:name="com.example.rushbuy.feature.notification.presentation.service.NewItemNotificationService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="dataSync" />
+        tools:targetApi="31"
+        tools:replace="android:theme"> <service
+        android:name="com.example.rushbuy.feature.notification.presentation.service.NewItemNotificationService"
+        android:enabled="true"
+        android:exported="false"
+        android:foregroundServiceType="dataSync" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -37,6 +35,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+    <activity
+        android:name="com.f1soft.esewapaymentsdk.ui.screens.EsewaPaymentActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
     </application>
 
 </manifest>

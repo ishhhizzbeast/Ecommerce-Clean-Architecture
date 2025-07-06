@@ -12,8 +12,13 @@ import com.example.rushbuy.core.foundation.domain.model.Product
 import com.example.rushbuy.core.foundation.domain.repository.IProductRepository
 import com.example.rushbuy.core.foundation.utils.toDomain
 import com.example.rushbuy.core.foundation.utils.toEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 /**
  * Concrete implementation of IProductRepository.
@@ -27,7 +32,9 @@ class ProductRepositoryImpl(
     private val remoteDataSource: IProductRemoteDataSource,
     private val localDataSource: IProductLocalDataSource
 ) : IProductRepository {
-
+    // A CoroutineScope for launching background tasks within the repository.
+    // In a production app, consider injecting an ApplicationScope or using a Worker for long-lived operations.
+    private val repositoryScope = CoroutineScope(Dispatchers.IO)
     // CHANGED: Now uses Pager and ProductPagingSource for paginated data
     override fun getProducts(): Flow<PagingData<Product>> {
         return Pager(
@@ -120,4 +127,41 @@ class ProductRepositoryImpl(
             }
         ).flow
     }
+
+    override fun getAllCategories(): Flow<List<String>> = flow {
+        // 1. Start by emitting categories currently in the local database.
+        // This ensures the UI gets data as fast as possible if cached data exists.
+        localDataSource.getAllCategories()
+            .distinctUntilChanged() // Only emit if the list of categories actually changes
+            .collect { emit(it) } // Continuously re-emit local categories as they change
+
+        // 2. Separately, trigger a refresh from the remote API in a background coroutine.
+        // The success of this refresh (by inserting new products) will update the local database,
+        // which then causes the localDataSource.getAllCategories() flow (being collected above)
+        // to automatically emit the updated list of categories.
+        repositoryScope.launch {
+            try {
+                // Fetch products from the remote to implicitly update categories in local DB.
+                // We're using getProducts(limit=100) here as a simple way to refresh categories.
+                // In a more robust system, if your API has a dedicated endpoint that
+                // returns *all* categories (e.g., /products/categories) and you have
+                // a CategoryEntity/CategoryDao, you would use remoteDataSource.getCategories()
+                // and then insert/update those specific CategoryEntities.
+                val remoteProductListResponse = remoteDataSource.getProducts(limit = 100, skip = 0) // Fetch some initial products
+                val remoteProducts = remoteProductListResponse.products.map { it.toDomain() }
+
+                // This aggressive strategy clears and re-inserts. Be mindful of potential data loss
+                // if other parts of the app rely on older product data during this brief clear.
+                // A more robust approach might be to compute a diff and perform targeted updates.
+                localDataSource.clearAllProducts() // Clear existing product cache
+                localDataSource.insertProducts(remoteProducts) // Insert fresh product data
+                println("Products (and derived categories) refreshed from remote successfully.")
+
+            } catch (e: Exception) {
+                  println("Error refreshing products/categories from remote: ${e.message}")
+            }
+        }
+    }
+
+
 }

@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Base theme for your app -->
-    <style name="Base.Theme.RushBuy" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Base.Theme.RushBuy" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Your app customizations -->
         <item name="colorPrimary">@color/splash_background</item>
         <!-- Add other customizations -->

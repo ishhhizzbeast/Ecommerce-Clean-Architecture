@@ -14,4 +14,6 @@ interface IProductRepository {
 
     fun searchProducts(query: String): Flow<PagingData<Product>>
     fun getProductsByCategory(category: String): Flow<PagingData<Product>>
+
+    fun getAllCategories(): Flow<List<String>>
 }

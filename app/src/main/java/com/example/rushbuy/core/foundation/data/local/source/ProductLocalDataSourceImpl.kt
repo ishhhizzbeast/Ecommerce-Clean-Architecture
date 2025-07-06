@@ -30,4 +30,8 @@ class ProductLocalDataSourceImpl(private val productDao: ProductDao) : IProductL
     override suspend fun getProductCount(): Int {
         return productDao.getProductCount()
     }
+
+    override suspend fun getAllCategories(): Flow<List<String>> {
+        return productDao.getAllCategories()
+    }
 }

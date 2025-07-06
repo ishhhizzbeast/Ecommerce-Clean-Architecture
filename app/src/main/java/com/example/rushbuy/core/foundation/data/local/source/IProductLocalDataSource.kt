@@ -12,4 +12,5 @@ interface IProductLocalDataSource {
     fun searchProducts(query: String): Flow<List<Product>>
     suspend fun deleteProductById(productId: Int) // Added for direct delete by ID
     suspend fun getProductCount(): Int // Added for PagingSource logic (to check if local cache is empty)
+    suspend fun getAllCategories(): Flow<List<String>>
 }

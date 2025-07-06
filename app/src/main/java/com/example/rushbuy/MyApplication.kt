@@ -2,8 +2,10 @@ package com.example.rushbuy
 
 import android.app.Application
 import com.example.rushbuy.core.foundation.di.coreModule
+import com.example.rushbuy.feature.Category.di.categoryModule
 import com.example.rushbuy.feature.admin.di.adminModule
 import com.example.rushbuy.feature.auth.di.authModule
+import com.example.rushbuy.feature.cart.di.cartModule
 import com.example.rushbuy.feature.notification.di.NotificationModule
 import com.example.rushbuy.feature.productList.di.productListModule
 import com.example.rushbuy.feature.splash.di.splashModule
@@ -18,7 +20,7 @@ class MyApplication : Application() {
         androidLogger()
         androidContext(this@MyApplication)
         modules(splashModule, authModule, coreModule, adminModule, NotificationModule,
-            productListModule
+            productListModule, categoryModule, cartModule
         )
     }
 }

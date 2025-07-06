@@ -42,6 +42,12 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
+    }
+    sourceSets {
+        getByName("main") {
+            jniLibs.srcDir("src/main/jniLibs") // Use srcDir for single directory
+        }
     }
 }
 
@@ -67,6 +73,9 @@ dependencies {
     //implementation ("androidx.core:core-splashscreen:1.0.1")
     //downloadable font family
     implementation("androidx.compose.ui:ui-text-google-fonts:1.8.1")
+
+    // For HttpLoggingInterceptor, required by eSewa SDK
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
     //room db
     val room_version = "2.7.1"
@@ -95,6 +104,9 @@ dependencies {
     //Firebase
     implementation ("com.google.firebase:firebase-auth-ktx:22.3.0")
 
+    // Use the latest stable version for Material Design Components
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
     //retrofit
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     //kotlin serilization
@@ -122,15 +134,13 @@ dependencies {
     //lifecycle
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.0")
 
-    //implementation("androidx.compose.foundation:foundation-layout-staggeredgrid:1.7.0") // Or the latest stable version
-
+    //esewa integration
+    // Use debugImplementation for the debug AAR
+    debugImplementation(project.files("libs/eSewaPaymentSdk-debug.aar"))
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.15.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation ("com.google.firebase:firebase-firestore-ktx")
     implementation ("androidx.compose.material3:material3")
-
-
-
 
 }

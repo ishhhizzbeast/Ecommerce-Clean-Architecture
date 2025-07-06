@@ -39,5 +39,8 @@ interface ProductDao {
 
     // NEW ADDITION:
     @Query("DELETE FROM products")
-    suspend fun clearAllProducts() // Required by ProductLocalDataSourceImpl
+    suspend fun clearAllProducts()
+
+    @Query("SELECT DISTINCT category FROM products")
+    fun getAllCategories(): Flow<List<String>>
 }

@@ -14,8 +14,8 @@ data class ProductDto(
     val description: String,
     val rating: Double,
     val category: String,
-    @SerializedName("images") // Correctly map 'images' to a List<String>
-    val images: List<String>
+//    @SerializedName("images") // Correctly map 'images' to a List<String>
+//    val images: List<String>
 )
 
 data class ProductListResponse(

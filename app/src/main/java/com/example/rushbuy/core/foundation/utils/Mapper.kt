@@ -9,7 +9,7 @@ import com.example.rushbuy.core.foundation.domain.model.Product
 fun ProductDto.toDomain(): Product {
     return Product(
         id = this.id,
-        imageUrl = this.images.firstOrNull() ?: thumbnailUrl,
+        imageUrl = this.thumbnailUrl,
         name = this.title, // 'title' from API maps to 'name' in domain model
         price = this.price,
         description = this.description,
@@ -24,7 +24,7 @@ fun ProductDto.toDomain(): Product {
 fun ProductDto.toEntity(): ProductEntity {
     return ProductEntity(
         id = this.id,
-        imageUrl = this.images.firstOrNull() ?: thumbnailUrl,
+        imageUrl = this.thumbnailUrl,
         name = this.title, // 'title' from API maps to 'name' in entity
         price = this.price,
         description = this.description,
