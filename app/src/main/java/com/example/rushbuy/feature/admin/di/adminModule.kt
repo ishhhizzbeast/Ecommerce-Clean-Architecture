@@ -1,11 +1,10 @@
 package com.example.rushbuy.feature.admin.di
 
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.rushbuy.feature.admin.presentation.viewmodel.AddEditProductViewModel
 import com.example.rushbuy.feature.admin.domain.AddProductUseCase
 import com.example.rushbuy.feature.admin.domain.DeleteProductUseCase
 import com.example.rushbuy.feature.admin.domain.GetAdminProductsUseCase
 import com.example.rushbuy.feature.admin.domain.UpdateProductUseCase
-import com.example.rushbuy.feature.admin.presentation.viewmodel.AddEditProductViewModel
 import com.example.rushbuy.feature.admin.presentation.viewmodel.AdminHomeViewModel
 import org.koin.dsl.module
 

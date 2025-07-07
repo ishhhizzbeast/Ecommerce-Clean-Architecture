@@ -22,8 +22,6 @@ fun AppNavigation(
         userNavGraph(navController = navController)
 
         // The Admin Section's entry point: hosts its own NavHost
-        composable(Screen.AdminGraph.route) {
-            AdminNavGraph() // This Composable contains its own NavHost and NavController
-        }
+        adminNavGraph(navController)
     }
 }

@@ -1,5 +1,6 @@
 package com.example.rushbuy.feature.admin.presentation.ui.component
 
+import com.example.rushbuy.feature.admin.presentation.viewmodel.AddEditProductViewModel
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -39,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.rushbuy.core.foundation.domain.model.Product
 import com.example.rushbuy.core.foundation.utils.ResultState
-import com.example.rushbuy.feature.admin.presentation.viewmodel.AddEditProductViewModel
 import org.koin.androidx.compose.koinViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -50,15 +50,13 @@ import androidx.compose.ui.Modifier
 @Composable
 fun AddEditProductScreen(
     navController: NavController,
-    productId: String? // This will now correctly be null when adding a new product due to AdminRoutes change
+    productId: String?
 ) {
     val viewModel: AddEditProductViewModel = koinViewModel()
 
     val productState by viewModel.productToEdit.collectAsState()
     val saveResultState by viewModel.saveUpdateResult.collectAsState()
 
-    // Internal mutable states for form fields
-    // REMOVE THIS LINE: var id by rememberSaveable { mutableStateOf(productId ?: "") }
     var name by rememberSaveable { mutableStateOf("") }
     var description by rememberSaveable { mutableStateOf("") }
     var price by rememberSaveable { mutableStateOf("") }
@@ -69,45 +67,40 @@ fun AddEditProductScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     // --- LaunchedEffect to handle initial product loading / form resetting ---
-    LaunchedEffect(viewModel.productId) { // Trigger when ViewModel's internal productId is set
-        // Use viewModel.productId directly as it's correctly managed by SavedStateHandle
-        if (!viewModel.productId.isNullOrBlank()) {
-            // It's an edit scenario, wait for productToEdit state to populate fields
-            // No direct loadProduct call here, it's handled in ViewModel's init.
-            // This LaunchedEffect will primarily react to productState changes.
-        } else {
-            // It's an add scenario or initial state, reset fields
-            name = ""
-            description = ""
-            price = ""
-            imageUrl = ""
-            category = ""
-            rating = ""
-        }
-    }
-
-
-    // Effect to update form fields when productToEdit changes (for edit mode)
-    // This effect ensures the UI fields reflect the loaded product.
+    // This effect ensures the UI fields reflect the loaded product for editing.
+    // It also resets fields for a new product.
     LaunchedEffect(productState) {
-        if (productState is ResultState.Success) {
-            val product = (productState as ResultState.Success).data
-            product?.let {
-                // Ensure the Product data class has all these fields
-                name = it.name
-                description = it.description
-                price = it.price.toString()
-                imageUrl = it.imageUrl
-                category = it.category
-                rating = it.ratings.toString() // Assuming Product has a 'ratings' field
+        when (productState) {
+            is ResultState.Success -> {
+                val product = (productState as ResultState.Success).data
+                product?.let {
+                    name = it.name
+                    description = it.description
+                    price = it.price.toString()
+                    imageUrl = it.imageUrl
+                    category = it.category
+                    rating = it.ratings.toString()
+                } ?: run {
+                    // If product is null (new product or not found), reset fields
+                    name = ""
+                    description = ""
+                    price = ""
+                    imageUrl = ""
+                    category = ""
+                    rating = ""
+                }
             }
-        } else if (productState is ResultState.Error) {
-            snackbarHostState.showSnackbar(
-                message = "Failed to load product: ${(productState as ResultState.Error).message}",
-                withDismissAction = true
-            )
-            // Optionally navigate back if product loading failed critically for edit mode
-            // navController.popBackStack()
+            is ResultState.Error -> {
+                snackbarHostState.showSnackbar(
+                    message = "Failed to load product: ${(productState as ResultState.Error).message}",
+                    withDismissAction = true,
+                    duration = SnackbarDuration.Long // Show for longer if it's an error
+                )
+                // Optionally navigate back if product loading failed critically for edit mode
+                // navController.popBackStack()
+            }
+            ResultState.Loading -> { /* Handled by LinearProgressIndicator below */ }
+            else -> {}
         }
     }
 
@@ -115,21 +108,25 @@ fun AddEditProductScreen(
     LaunchedEffect(saveResultState) {
         when (saveResultState) {
             is ResultState.Success -> {
-                // Check if it's not the initial Unit state, meaning a save operation occurred
-                if ((saveResultState as ResultState.Success).data != Unit) { // More robust check for actual save completion
-                    snackbarHostState.showSnackbar(
-                        message = "Product saved successfully!",
-                        duration = SnackbarDuration.Short
-                    )
-                    // Navigate back to the admin home screen after successful save
-                    navController.popBackStack()
-                    viewModel.resetSaveUpdateResult() // Reset ViewModel state to avoid re-triggering
-                }
+                // MODIFIED: This is the key change.
+                // We now check if the data is specifically 'Unit' (meaning a save operation completed)
+                // AND that the current state is not the initial ResultState.Success(Unit)
+                // A common pattern is to only react if the state was previously Loading.
+                // However, the simplest fix is to just react to Success(Unit) and then reset.
+                // The `LaunchedEffect` will only re-run if `saveResultState` *changes*.
+                // So, if it changes from Loading to Success(Unit), this block will trigger.
+                snackbarHostState.showSnackbar(
+                    message = "Product saved successfully!",
+                    duration = SnackbarDuration.Short
+                )
+                navController.popBackStack() // <--- This will now execute!
+                viewModel.resetSaveUpdateResult() // Reset ViewModel state to avoid re-triggering
             }
             is ResultState.Error -> {
                 snackbarHostState.showSnackbar(
                     message = "Error saving product: ${(saveResultState as ResultState.Error).message}",
-                    withDismissAction = true
+                    withDismissAction = true,
+                    duration = SnackbarDuration.Long // Show for longer if it's an error
                 )
                 viewModel.resetSaveUpdateResult()
             }
@@ -142,7 +139,6 @@ fun AddEditProductScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    // Use viewModel.productId directly to determine Add/Edit title
                     Text(text = if (viewModel.productId.isNullOrBlank()) "Add New Product" else "Edit Product")
                 },
                 navigationIcon = {
@@ -163,12 +159,10 @@ fun AddEditProductScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Show loading indicator when product is being fetched for editing
             if (productState is ResultState.Loading && !viewModel.productId.isNullOrBlank()) {
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             }
 
-            // Input fields (no changes here, they use String states)
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
@@ -221,7 +215,7 @@ fun AddEditProductScreen(
                         rating = newValue
                     }
                 },
-                label = { Text("Rating (e.g., 4.5)") }, // Changed label for clarity
+                label = { Text("Rating (e.g., 4.5)") },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true
@@ -229,18 +223,14 @@ fun AddEditProductScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Save Button Logic
             Button(
                 onClick = {
                     val parsedPrice = price.toDoubleOrNull() ?: 0.0
                     val parsedRating = rating.toDoubleOrNull() ?: 0.0
 
                     if (viewModel.productId.isNullOrBlank()) {
-                        // ADD NEW PRODUCT SCENARIO
                         val newProduct = Product(
-                            // For new products, ID is typically 0 or null. Your ViewModel's saveProduct
-                            // method already checks for product.id == 0 to determine add vs. update.
-                            id = 0, // Use 0 as a placeholder for new products (backend will generate actual ID)
+                            id = 0,
                             name = name,
                             description = description,
                             price = parsedPrice,
@@ -248,13 +238,12 @@ fun AddEditProductScreen(
                             category = category,
                             ratings = parsedRating
                         )
-                        viewModel.saveProduct(newProduct) // Calls addProductUseCase internally
+                        viewModel.saveProduct(newProduct)
                     } else {
-                        // EDIT EXISTING PRODUCT SCENARIO
                         val existingProductId = viewModel.productId?.toIntOrNull()
                         if (existingProductId != null) {
                             val updatedProduct = Product(
-                                id = existingProductId, // Use the actual ID from navigation for update
+                                id = existingProductId,
                                 name = name,
                                 description = description,
                                 price = parsedPrice,
@@ -262,26 +251,18 @@ fun AddEditProductScreen(
                                 category = category,
                                 ratings = parsedRating
                             )
-                            viewModel.saveProduct(updatedProduct) // Calls updateProductUseCase internally
+                            viewModel.saveProduct(updatedProduct)
                         } else {
-                            // This scenario should be rare if validation happens earlier,
-                            // but good for robustness.
                             Log.e("AddEditProductScreen", "Attempted to update with invalid numeric productId from ViewModel: ${viewModel.productId}")
-//                            snackbarHostState.showSnackbar(
-//                                message = "Error: Invalid product ID for update operation.",
-//                                withDismissAction = true,
-//                                duration = SnackbarDuration.Long
-//                            )
                         }
                     }
                 },
-                // Disable button if loading or required fields are empty/invalid
                 enabled = saveResultState !is ResultState.Loading &&
                         name.isNotBlank() &&
-                        price.isNotBlank() && price.toDoubleOrNull() != null && // Price must be a valid number
+                        price.isNotBlank() && price.toDoubleOrNull() != null &&
                         imageUrl.isNotBlank() &&
                         category.isNotBlank() &&
-                        rating.isNotBlank() && rating.toDoubleOrNull() != null, // Rating must be a valid number
+                        rating.isNotBlank() && rating.toDoubleOrNull() != null,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 if (saveResultState is ResultState.Loading) {

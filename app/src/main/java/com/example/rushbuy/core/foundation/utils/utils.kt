@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -38,7 +39,7 @@ sealed class ResultState<out T> {
 
     data class Error(val message: String) : ResultState<Nothing>()
 
-    object Idle : ResultState<Nothing>() // Added Idle state for better UI management
+    object Idle : ResultState<Nothing>()// Added Idle state for better UI management
 }
 
 sealed class Screen(val route: String) {
@@ -188,4 +189,12 @@ sealed class BottomNavItem(val route: String, val icon: ImageVector, val label: 
     object Category : BottomNavItem("category_route", Icons.Default.Category, "Category")
     object Cart : BottomNavItem("cart_route", Icons.Default.ShoppingCart, "Cart")
     object Profile : BottomNavItem("profile_route", Icons.Default.Person, "Profile")
+}
+sealed class AdminBottomNavItem(val route: String, val icon: ImageVector, val label: String) {
+    // This will be the Products List/Dashboard for Admin
+    object Products : AdminBottomNavItem(Screen.AdminHome.route, Icons.Default.Dashboard, "Products")
+    // Reuse the existing Profile route
+    object Profile : AdminBottomNavItem(Screen.Profile.route, Icons.Default.Person, "Profile")
+    // Add other admin-specific tabs if needed, e.g., Orders
+    // object Orders : AdminBottomNavItem(Screen.AdminOrders.route, Icons.Default.Build, "Orders")
 }

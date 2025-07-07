@@ -8,6 +8,7 @@ import com.example.rushbuy.feature.auth.di.authModule
 import com.example.rushbuy.feature.cart.di.cartModule
 import com.example.rushbuy.feature.notification.di.NotificationModule
 import com.example.rushbuy.feature.productList.di.productListModule
+import com.example.rushbuy.feature.profile.di.userProfileModule
 import com.example.rushbuy.feature.splash.di.splashModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -20,7 +21,7 @@ class MyApplication : Application() {
         androidLogger()
         androidContext(this@MyApplication)
         modules(splashModule, authModule, coreModule, adminModule, NotificationModule,
-            productListModule, categoryModule, cartModule
+            productListModule, categoryModule, cartModule, userProfileModule
         )
     }
 }

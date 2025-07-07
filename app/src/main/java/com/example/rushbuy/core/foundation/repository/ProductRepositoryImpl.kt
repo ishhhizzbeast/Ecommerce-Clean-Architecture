@@ -40,7 +40,8 @@ class ProductRepositoryImpl(
         return Pager(
             config = PagingConfig(
                 pageSize = 10, // Define your page size, should match what your API and PagingSource can handle
-                enablePlaceholders = false // Set to true if your PagingSource handles nulls and placeholders
+                enablePlaceholders = false,
+                prefetchDistance = 5// Set to true if your PagingSource handles nulls and placeholders
             ),
             pagingSourceFactory = {
                 // The PagingSource orchestrates fetching from remote and storing in local
@@ -71,11 +72,9 @@ class ProductRepositoryImpl(
 
     // CHANGED: Uses local data source for adding. Remote API integration is a TODO.
     override suspend fun addProduct(product: Product): Product {
-        // TODO: In a real application, you would typically add to the remote API first,
-        // then insert the server-returned product (which might have a new ID) into local cache.
-        // For now, it only adds to local cache.
-        localDataSource.insertProducts(listOf(product))
-        return product // Assuming the 'product' object already has its ID set if it's new
+        val generatedId = localDataSource.insertProduct(product) // Use the new single-insert method
+        // Return a new Product object with the original data but the correct generated ID
+        return product.copy(id = generatedId.toInt())
     }
 
     // CHANGED: Uses local data source for updating. Remote API integration is a TODO.

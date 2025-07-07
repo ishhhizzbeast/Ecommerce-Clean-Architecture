@@ -5,6 +5,8 @@ package com.example.rushbuy.core.foundation.utils
 import com.example.rushbuy.core.foundation.data.local.entity.ProductEntity
 import com.example.rushbuy.core.foundation.data.remote.dto.ProductDto
 import com.example.rushbuy.core.foundation.domain.model.Product
+import com.example.rushbuy.feature.profile.domain.model.UserProfile
+import com.google.firebase.auth.FirebaseUser
 
 fun ProductDto.toDomain(): Product {
     return Product(
@@ -64,6 +66,15 @@ fun Product.toEntity(): ProductEntity {
         description = this.description,
         ratings = this.ratings,
         category = this.category
+    )
+}
+
+fun FirebaseUser.toDomainUserProfile(): UserProfile {
+    return UserProfile(
+        uid = uid,
+        displayName = displayName,
+        email = email
+        // Removed: profilePictureUrl = photoUrl?.toString()
     )
 }
 

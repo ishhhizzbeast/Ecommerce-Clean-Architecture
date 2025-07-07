@@ -16,7 +16,11 @@ class ProductLocalDataSourceImpl(private val productDao: ProductDao) : IProductL
         productDao.getProductById(productId)?.toDomain()
 
     override suspend fun insertProducts(products: List<Product>) =
-        productDao.insertAllProducts(products.map { it.toEntity() }) // Maps domain to entity for Room
+        productDao.insertAllProducts(products.map { it.toEntity() })
+
+    override suspend fun insertProduct(product: Product): Long {
+        return productDao.insertProduct(product.toEntity())
+    }
 
     override suspend fun clearAllProducts() = productDao.clearAllProducts()
 

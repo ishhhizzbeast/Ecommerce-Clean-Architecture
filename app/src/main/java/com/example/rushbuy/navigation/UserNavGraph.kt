@@ -1,7 +1,5 @@
 package com.example.rushbuy.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Category
@@ -9,7 +7,6 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -28,10 +25,10 @@ import com.example.rushbuy.core.foundation.utils.Screen
 import com.example.rushbuy.feature.productList.presentation.ProductListScreen
 import com.example.rushbuy.feature.productList.presentation.ui.components.ProductDetailScreen
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import com.example.rushbuy.feature.Category.presentation.ui.CategoryScreen
+import com.example.rushbuy.feature.profile.presentation.ui.ProfileScreen
 
 // Data class for bottom navigation items (replaces BottomNavItem from previous MainScreen.kt)
 sealed class UserBottomNavItem(val route: String, val icon: ImageVector, val label: String) {
@@ -102,7 +99,7 @@ fun UserMainScreen(mainNavController: NavController) {
             composable(UserBottomNavItem.Category.route) { CategoryScreen(navController = userNavController) }
             // Use the actual CartScreen composable here
             composable(UserBottomNavItem.Cart.route) { com.example.rushbuy.feature.cart.presentation.ui.CartScreen(navController = userNavController) } // <-- UPDATED HERE
-            composable(UserBottomNavItem.Profile.route) { ProfileScreen(navController = userNavController) }
+            composable(UserBottomNavItem.Profile.route) { ProfileScreen(internalNavController = userNavController,mainNavController = mainNavController) }
 
             // Product Detail Screen (accessible from ProductListScreen, not a bottom nav item)
             composable(
@@ -120,15 +117,5 @@ fun UserMainScreen(mainNavController: NavController) {
                 }
             }
         }
-    }
-}
-
-@Composable
-fun ProfileScreen(navController: NavController) {
-    Box(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text("Profile Screen - Coming Soon!", style = MaterialTheme.typography.headlineMedium)
     }
 }

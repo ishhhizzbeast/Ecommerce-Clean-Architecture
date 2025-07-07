@@ -6,7 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface IProductLocalDataSource {
     fun getAllProducts(): Flow<List<Product>> // Returns domain models
-    suspend fun getProductById(productId: Int): Product? // Returns domain model
+    suspend fun getProductById(productId: Int): Product?// Returns domain model
+    suspend fun insertProduct(product: Product):Long
     suspend fun insertProducts(products: List<Product>) // Accepts list of domain models
     suspend fun clearAllProducts() // Useful for clearing cache
     fun searchProducts(query: String): Flow<List<Product>>
